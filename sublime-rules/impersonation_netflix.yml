@@ -1,0 +1,28 @@
+name: "Brand impersonation: Netflix"
+description: |
+  Impersonation of the streaming service Netflix.
+references:
+  - "https://help.netflix.com/en/node/65674"
+type: "rule"
+severity: "low"
+source: |
+  type.inbound
+  and (
+      strings.ilike(sender.display_name, '*Netflix*')
+      or strings.ilike(sender.email.domain.domain, '*Netflix*')
+  )
+  and sender.email.domain.root_domain not in~ ('netflix.com')
+  // first-time sender
+  and (
+          (
+              sender.email.domain.root_domain in $free_email_providers
+              and sender.email.email not in $sender_emails
+          )
+          or (
+              sender.email.domain.root_domain not in $free_email_providers
+              and sender.email.domain.domain not in $sender_domains
+          )
+  )
+tags:
+  - "Brand impersonation"
+  - "Suspicious sender"
