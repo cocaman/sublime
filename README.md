@@ -1,0 +1,2 @@
+# sublime
+Sublime Detection Rules
